@@ -10,6 +10,7 @@ int main() {
   T.insert("J", 13);
   T.insert("I", 25);
   T.insert("C", 35);
+  /*
   T.insert("B", 24);
   T.insert("H", 29);
   T.insert("E", 33);
@@ -18,15 +19,18 @@ int main() {
   T.insert("K", 9);
   T.insert("D", 8);
   T.insert("L", 16);
-
+  */
+  cout << "prio of root: " << T.priority() << " " << &T << endl;
+  
+  
   cout << endl;
   T.inorder();
   cout << endl;
 
-  T.dump();
+  T.remove();
 
+  cout << "Prio of root: " << T.priority() << endl;
+  T.inorder();
 
-  cout << "FIND TEST" << endl;
-  cout << (T.find("L") ? *T.find("L") : "DNE") << endl;
   return 0;
 }

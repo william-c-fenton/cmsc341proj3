@@ -120,14 +120,18 @@ bool Treap::locate (const char position[], data_t& x, priority_t& p, int& h, int
  */
 void Treap::rightRot(){
 
-  Treap y = _nptr->_left;
-  Treap b = y._nptr->_right;
+  TreapNode *y = _nptr->_left._nptr;
+  TreapNode *b = y->_right._nptr;
   std::cout << "Nptr" << _nptr << std::endl;
+  std::cout << "Left child: " << y << std::endl;
+  std::cout << "Right grandchild: " << b << std::endl;
+  
   if (height() > 1){
     //set "x" left equal to b
-    _nptr->_left._nptr = b._nptr;
+    _nptr->_left._nptr = b;
     //set "y" right to be equal to "x" 
-    y._nptr->_right._nptr = _nptr;
+    y->_right._nptr = _nptr;
+    _nptr = y;
   }
 }
 
@@ -168,14 +172,7 @@ void Treap::insert(const data_t& x, const priority_t& p) {
   }
   
   std::cout << "GOT PAST REAL INSERT" << std::endl;
-  if (_nptr->_right.priority() > priority()){
-    std::cout << "NEEDS RIGHT ROTATION" << std::endl;
-    rightRot();
-  }
-  else if (_nptr->_left.priority() > priority()){
-    std::cout << "NEEDS LEFT ROTATION" << std::endl;
-    //leftRot();
-  }
+  
 
 
   // Update height. Maybe this should be a helper function??
@@ -185,7 +182,7 @@ void Treap::insert(const data_t& x, const priority_t& p) {
 
 }
 
-bool Treap::remove(const data_t& x) {
+bool Treap::remove(/*const data_t& x*/) {
   //
   // Implement treap element removal
   //
@@ -196,6 +193,7 @@ bool Treap::remove(const data_t& x) {
   //swap node with next inorder value
   //delete the node at the newly swapped position.
   //after deletion finishes fix the heap priority values.s
+  rightRot();
 }
 
 

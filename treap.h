@@ -54,7 +54,7 @@ public:
 
   // Remove node with given data value; return true if successful and
   // false otherwise.
-  bool remove(/*const data_t& x*/) ;
+  bool remove(const data_t& x) ;
 
   // Perform an inorder traversal and print nodes.
   void inorder() ;
@@ -72,6 +72,7 @@ private:
 
   void rightRot() ;
   void leftRot() ;
+  void updateHeight() ;
 } ;
 
 std::ostream& operator<< (std::ostream& os, const Treap& T) ;

@@ -19,6 +19,8 @@ Treap::~Treap() {
   //
   // Implement destructor
   //
+  //do POST-order traversal (left, right, root) and use remove
+  //to delete root.
 }
 
 const Treap& Treap::operator=(const Treap& rhs) {
@@ -122,20 +124,21 @@ void Treap::rightRot(){
 
   TreapNode *y = _nptr->_left._nptr;
   TreapNode *b;
-  if (!y){
+  if (y != nullptr){
     b = y->_right._nptr;
   }
   else{
     b = nullptr;
   }
   
-  if (height() >= 1){
-    //set "y" right to be equal to "x" 
-    y->_right._nptr = _nptr;
+
     //set "x" left equal to b
-    _nptr->_left._nptr = b;
-    _nptr = y;
-  }
+  _nptr->_left._nptr = b;
+  //set "y" right to be equal to "x" 
+  y->_right._nptr = _nptr;
+  updateHeight();
+  _nptr = y;
+
 }
 
 /* Left Rotation:
@@ -149,20 +152,41 @@ void Treap::rightRot(){
 void Treap::leftRot(){
   TreapNode *y = _nptr->_right._nptr;
   TreapNode *b;
-  if (!y){
+  if (y != nullptr){
     b = y->_left._nptr;
   }
   else{
     b = nullptr;
   }
   
-  if (height() >= 1){
-    //set "x" right equal to b
-    _nptr->_right._nptr = b;
-    //set "y" left to be equal to "x" 
-    y->_left._nptr = _nptr;
-    _nptr = y;
-  }
+  
+  //set "x" right equal to b
+  _nptr->_right._nptr = b;
+  //set "y" left to be equal to "x" 
+  y->_left._nptr = _nptr;
+  updateHeight();
+  _nptr = y;
+  
+  
+}
+
+//gets Height of tree using same method that was in the template
+void Treap::updateHeight(){
+  int leftHeight, rightHeight;
+  if (_nptr->_left._nptr != nullptr)
+    leftHeight = _nptr->_left.height();
+  else
+    leftHeight = -1;
+  
+  if (_nptr->_right._nptr != nullptr)
+    rightHeight = _nptr->_right.height();
+  else 
+    rightHeight = -1;
+
+  if (_nptr->_data == "E") cout << _nptr->_right._nptr << endl;
+
+  int height = 1 + ( leftHeight > rightHeight ? leftHeight : rightHeight );
+  _nptr->_height = height;
 }
 
 // Basic BST insertion.  Does not allow duplicate values.
@@ -182,18 +206,18 @@ void Treap::insert(const data_t& x, const priority_t& p) {
 
   }
   
-  std::cout << "GOT PAST REAL INSERT" << std::endl;
-  
-
+  if(_nptr->_left.priority() > priority()){
+    rightRot();
+  }
+  else if (_nptr->_right.priority() > priority()){
+    leftRot();
+  }
 
   // Update height. Maybe this should be a helper function??
-  int leftHeight = _nptr->_left.height();
-  int rightHeight = _nptr->_right.height();
-  _nptr->_height = 1 + ( leftHeight > rightHeight ? leftHeight : rightHeight );
-
+  updateHeight();
 }
 
-bool Treap::remove(/*const data_t& x*/) {
+bool Treap::remove(const data_t& x) {
   //
   // Implement treap element removal
   //
@@ -204,7 +228,7 @@ bool Treap::remove(/*const data_t& x*/) {
   //swap node with next inorder value
   //delete the node at the newly swapped position.
   //after deletion finishes fix the heap priority values.s
-  leftRot();
+
 }
 
 

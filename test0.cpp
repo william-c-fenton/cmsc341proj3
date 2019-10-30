@@ -26,8 +26,15 @@ int main() {
   cout << endl;
   T.inorder();
   cout << endl;
+  T.dump();
 
+  T.remove("A");
+
+  T.inorder();
+
+  cout << T.findMin() << endl;
   T.dump();
   
+
   return 0;
 }

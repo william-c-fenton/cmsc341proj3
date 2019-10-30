@@ -50,7 +50,7 @@ const data_t* Treap::find(const data_t& x) {
   //curr node and right if it is more. if data == currnode data
   //then return pointer to the data value.
   data_t *value = nullptr;
-  //if you've gotten to an external node, it's not in the tree.
+  //if you've gotten to an external null node, it's not in the tree.
   if (_nptr == nullptr) return value;
 
   if (_nptr->_data < x){
@@ -64,6 +64,19 @@ const data_t* Treap::find(const data_t& x) {
     return value;
   }
 
+}
+
+//findMin(): Returns pointer to the _nptr of Subtree with lowest data value
+TreapNode* Treap::findMin(){
+  if(empty()){
+    return nullptr;
+  }
+  else if(_nptr->_left.empty()){
+    return _nptr;
+  }
+  else{
+    return _nptr->_left.findMin();
+  }
 }
 
 // Inorder traversal.  Recommend you NOT change this!!!
@@ -229,6 +242,40 @@ bool Treap::remove(const data_t& x) {
   //delete the node at the newly swapped position.
   //after deletion finishes fix the heap priority values.s
 
+  //navigate to correct node to delete
+  TreapNode* currParent = _nptr;
+  bool test = x < _nptr->_data;
+  TreapNode* curr = (test ? _nptr->_left._nptr : _nptr->_right._nptr);
+  cout << "parent: " << currParent << endl
+  << "child: " << curr << endl;
+  if (curr->_data < x) {
+   currParent->_right.remove(x) ;
+
+  } 
+  else if (x < curr->_data ) {
+    currParent->_left.remove(x) ;
+
+  }
+  else if (currParent == nullptr){
+    return false;
+  }
+  
+
+  //if curr has one or zero children (same case works) 
+  if ((curr->_left.empty() || curr->_right.empty()) && curr->_data == x){
+    //link up the parent with the grandchild
+    bool hasLeft = curr->_left.empty() ? false : true;
+    TreapNode *old = curr;
+    curr = hasLeft ? curr->_left._nptr : curr->_right._nptr;
+    if (test){
+      currParent->_left._nptr = curr;
+    }
+    else{
+      currParent->_right._nptr = curr;
+    }
+    delete old;
+    return true;
+  }
 }
 
 

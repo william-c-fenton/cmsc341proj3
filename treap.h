@@ -66,6 +66,7 @@ public:
 
   // Print data about all nodes 
   void dump() ;
+  TreapNode* findMin() ;
 
 private:
   TreapNode *_nptr ;        // Pointer to node (data)
@@ -73,6 +74,7 @@ private:
   void rightRot() ;
   void leftRot() ;
   void updateHeight() ;
+  
 } ;
 
 std::ostream& operator<< (std::ostream& os, const Treap& T) ;

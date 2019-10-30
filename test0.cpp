@@ -27,14 +27,12 @@ int main() {
   T.inorder();
   cout << endl;
   T.dump();
-
-  T.remove("A");
-
-  T.inorder();
-
-  cout << T.findMin() << endl;
-  T.dump();
   
-
+  cout << "REMOVE: " << T.remove("G") << endl;
+  cout << "REMOVE: " << T.remove("A") << endl;
+  cout << "REMOVE: " << T.remove("E") << endl;
+  T.inorder();
+  cout << endl;
+  T.dump();
   return 0;
 }

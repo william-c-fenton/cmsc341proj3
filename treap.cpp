@@ -21,6 +21,17 @@ Treap::~Treap() {
   //
   //do POST-order traversal (left, right, root) and use remove
   //to delete root.
+  makeEmpty();
+}
+
+void Treap::makeEmpty(){
+  if (_nptr != nullptr){
+    cout << "DELETING: " << _nptr->_data << endl;
+    _nptr->_left.makeEmpty();
+    _nptr->_right.makeEmpty();
+    delete _nptr;
+    _nptr = nullptr;
+  }
 }
 
 const Treap& Treap::operator=(const Treap& rhs) {
@@ -185,21 +196,9 @@ void Treap::leftRot(){
 
 //gets Height of tree using same method that was in the template
 void Treap::updateHeight(){
-  int leftHeight, rightHeight;
-  if (_nptr->_left._nptr != nullptr)
-    leftHeight = _nptr->_left.height();
-  else
-    leftHeight = -1;
-  
-  if (_nptr->_right._nptr != nullptr)
-    rightHeight = _nptr->_right.height();
-  else 
-    rightHeight = -1;
-
-  if (_nptr->_data == "E") cout << _nptr->_right._nptr << endl;
-
-  int height = 1 + ( leftHeight > rightHeight ? leftHeight : rightHeight );
-  _nptr->_height = height;
+    int leftHeight = _nptr->_left.height(), rightHeight = _nptr->_right.height();
+    int height = 1 + ( leftHeight > rightHeight ? leftHeight : rightHeight );
+    _nptr->_height = height;
 }
 
 // Basic BST insertion.  Does not allow duplicate values.
@@ -243,41 +242,61 @@ bool Treap::remove(const data_t& x) {
   //after deletion finishes fix the heap priority values.s
 
   //navigate to correct node to delete
-  TreapNode* currParent = _nptr;
+  recurRemove(x);
+  if (!find(x))
+    return true;
+  return false;
+
+}
+
+void Treap::recurRemove(const data_t& x){
+  TreapNode* curr = _nptr;
+
   bool test = x < _nptr->_data;
-  TreapNode* curr = (test ? _nptr->_left._nptr : _nptr->_right._nptr);
-  cout << "parent: " << currParent << endl
-  << "child: " << curr << endl;
   if (curr->_data < x) {
-   currParent->_right.remove(x) ;
+   curr->_right.recurRemove(x) ;
 
   } 
   else if (x < curr->_data ) {
-    currParent->_left.remove(x) ;
+    curr->_left.recurRemove(x) ;
 
   }
-  else if (currParent == nullptr){
-    return false;
+  else if (curr == nullptr){
+    return ;
   }
   
+  if (_nptr != nullptr){
+      updateHeight();
+    }
 
   //if curr has one or zero children (same case works) 
-  if ((curr->_left.empty() || curr->_right.empty()) && curr->_data == x){
+  if ((curr->_left.empty() || curr->_right.empty()) && x == curr->_data){
     //link up the parent with the grandchild
     bool hasLeft = curr->_left.empty() ? false : true;
-    TreapNode *old = curr;
-    curr = hasLeft ? curr->_left._nptr : curr->_right._nptr;
-    if (test){
-      currParent->_left._nptr = curr;
+    TreapNode *old = _nptr;
+    _nptr = hasLeft ? curr->_left._nptr : curr->_right._nptr;
+    old->_left._nptr = nullptr;
+    old->_right._nptr = nullptr;
+    delete old;
+    
+  }
+  //if curr has 2 children
+  else if ((!curr->_left.empty() && !curr->_right.empty()) && x == curr->_data){
+
+    //if the left priority is lower than the right priority
+    if (curr->_left.priority() < curr->_right.priority()){
+      //rotate left and see if the case has changed
+      leftRot();
+      remove(x);
     }
     else{
-      currParent->_right._nptr = curr;
+      rightRot();
+      remove(x);
     }
-    delete old;
-    return true;
+
+    updateHeight();
   }
 }
-
 
 // Treap::dump() just calls TreapNode::dump()
 void Treap::dump() {

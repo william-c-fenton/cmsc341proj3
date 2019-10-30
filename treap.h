@@ -66,15 +66,15 @@ public:
 
   // Print data about all nodes 
   void dump() ;
-  TreapNode* findMin() ;
 
 private:
   TreapNode *_nptr ;        // Pointer to node (data)
-
+  TreapNode* findMin() ;
   void rightRot() ;
   void leftRot() ;
   void updateHeight() ;
-  
+  void recurRemove(const data_t& x) ;
+  void makeEmpty();
 } ;
 
 std::ostream& operator<< (std::ostream& os, const Treap& T) ;

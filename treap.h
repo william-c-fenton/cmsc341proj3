@@ -73,8 +73,9 @@ private:
   void rightRot() ;
   void leftRot() ;
   void updateHeight() ;
-  void recurRemove(const data_t& x) ;
+  void recurRemove(const data_t& x, bool& flag) ;
   void makeEmpty();
+  void makeCopy(const Treap& source);
 } ;
 
 std::ostream& operator<< (std::ostream& os, const Treap& T) ;

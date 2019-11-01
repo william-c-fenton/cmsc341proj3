@@ -28,9 +28,7 @@ int main() {
   cout << endl;
   T.dump();
   
-  cout << "REMOVE: " << T.remove("G") << endl;
-  cout << "REMOVE: " << T.remove("A") << endl;
-  cout << "REMOVE: " << T.remove("E") << endl;
+  T.insert("G", 50);
   T.inorder();
   cout << endl;
   T.dump();

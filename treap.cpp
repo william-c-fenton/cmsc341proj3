@@ -13,6 +13,9 @@ Treap::Treap(const Treap& other) {
   //
   // Implement copy constructor
   //
+  _nptr = nullptr;
+
+  makeCopy(other);
 }
 
 Treap::~Treap() {
@@ -21,12 +24,25 @@ Treap::~Treap() {
   //
   //do POST-order traversal (left, right, root) and use remove
   //to delete root.
+
   makeEmpty();
 }
 
+//makeCopy
+//assuming an empty base tree, makes a copy from the source tree.
+void Treap::makeCopy(const Treap& source){
+  if (source._nptr){
+    data_t nD = source._nptr->_data;
+    priority_t nP = source._nptr->_pri;
+    insert(nD, nP);
+    makeCopy(source._nptr->_left);
+    makeCopy(source._nptr->_right);
+  }
+}
+
+//deletes the entire tree in post order fashion.
 void Treap::makeEmpty(){
   if (_nptr != nullptr){
-    cout << "DELETING: " << _nptr->_data << endl;
     _nptr->_left.makeEmpty();
     _nptr->_right.makeEmpty();
     delete _nptr;
@@ -38,6 +54,9 @@ const Treap& Treap::operator=(const Treap& rhs) {
   //
   // Implement assignment operator
   //
+  makeEmpty();
+  makeCopy(rhs);
+  return *this;
 }
 
 // Return -1 if the treap is empty; otherwise, return value in _height.
@@ -218,6 +237,7 @@ void Treap::insert(const data_t& x, const priority_t& p) {
 
   }
   
+  //if priority is wrong, do rotations to fix
   if(_nptr->_left.priority() > priority()){
     rightRot();
   }
@@ -230,41 +250,38 @@ void Treap::insert(const data_t& x, const priority_t& p) {
 }
 
 bool Treap::remove(const data_t& x) {
-  //
-  // Implement treap element removal
-  //
+  
+  bool flag = false;
+  recurRemove(x, flag);
+  return flag;
+
+}
+
+//recursive helper for remove().  takes the data value to be removed, 
+// and the eventual return value of the remove() function.
+void Treap::recurRemove(const data_t& x, bool& flag){
   //navigate to the node to be removed 
   //IF it has only 1 or 0 child:
   //link child of currnode to parent of currnode and delete currnode
   //IF it has 2 child:
-  //swap node with next inorder value
-  //delete the node at the newly swapped position.
-  //after deletion finishes fix the heap priority values.s
-
-  //navigate to correct node to delete
-  recurRemove(x);
-  if (!find(x))
-    return true;
-  return false;
-
-}
-
-void Treap::recurRemove(const data_t& x){
+  //do rotations until the node can be safely deleted
   TreapNode* curr = _nptr;
-
   bool test = x < _nptr->_data;
+
+  //navigate to correct node (basic bsc recursive finding)
   if (curr->_data < x) {
-   curr->_right.recurRemove(x) ;
+   curr->_right.recurRemove(x, flag) ;
 
   } 
   else if (x < curr->_data ) {
-    curr->_left.recurRemove(x) ;
+    curr->_left.recurRemove(x, flag) ;
 
   }
   else if (curr == nullptr){
     return ;
   }
-  
+
+  //update the height after rotations and removal
   if (_nptr != nullptr){
       updateHeight();
     }
@@ -275,10 +292,12 @@ void Treap::recurRemove(const data_t& x){
     bool hasLeft = curr->_left.empty() ? false : true;
     TreapNode *old = _nptr;
     _nptr = hasLeft ? curr->_left._nptr : curr->_right._nptr;
+    
+    //cut children off (causes issues with destructor if they are there)
     old->_left._nptr = nullptr;
     old->_right._nptr = nullptr;
     delete old;
-    
+    flag = true;
   }
   //if curr has 2 children
   else if ((!curr->_left.empty() && !curr->_right.empty()) && x == curr->_data){
@@ -287,13 +306,14 @@ void Treap::recurRemove(const data_t& x){
     if (curr->_left.priority() < curr->_right.priority()){
       //rotate left and see if the case has changed
       leftRot();
-      remove(x);
+      recurRemove(x, flag);
     }
     else{
       rightRot();
-      remove(x);
+      recurRemove(x, flag);
     }
 
+    //this is probably vestigal but I'm too scared to remove it.
     updateHeight();
   }
 }

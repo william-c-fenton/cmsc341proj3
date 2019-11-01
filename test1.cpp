@@ -26,9 +26,9 @@ int main() {
 
   // Delete "K" and "C"
 
-  T.remove("K");
-  T.remove("C");
-  
+  cout << T.remove("K") << endl;
+  cout << T.remove("C") << endl;
+   
   cout << endl;
   T.inorder();
   cout << endl;

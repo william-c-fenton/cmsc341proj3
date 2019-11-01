@@ -51,9 +51,7 @@ void Treap::makeEmpty(){
 }
 
 const Treap& Treap::operator=(const Treap& rhs) {
-  //
-  // Implement assignment operator
-  //
+  //Deletes old tree, makes copy of new tree.
   makeEmpty();
   makeCopy(rhs);
   return *this;
@@ -98,6 +96,7 @@ const data_t* Treap::find(const data_t& x) {
 
 //findMin(): Returns pointer to the _nptr of Subtree with lowest data value
 TreapNode* Treap::findMin(){
+  //basic bst traversal
   if(empty()){
     return nullptr;
   }
@@ -174,7 +173,6 @@ void Treap::rightRot(){
     b = nullptr;
   }
   
-
     //set "x" left equal to b
   _nptr->_left._nptr = b;
   //set "y" right to be equal to "x" 
@@ -201,7 +199,6 @@ void Treap::leftRot(){
   else{
     b = nullptr;
   }
-  
   
   //set "x" right equal to b
   _nptr->_right._nptr = b;

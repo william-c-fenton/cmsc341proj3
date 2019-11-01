@@ -69,12 +69,21 @@ public:
 
 private:
   TreapNode *_nptr ;        // Pointer to node (data)
+  //return minimum value in tree, nullptr if DNE
   TreapNode* findMin() ;
+  //perform right rotation on root
   void rightRot() ;
+  //perform left rotation on root
   void leftRot() ;
+  //updates height of root node
   void updateHeight() ;
+  //recursive helper for remove(), changes the value of flag to
+  //true if deletion was successful.
   void recurRemove(const data_t& x, bool& flag) ;
+  //deletes entire tree.
   void makeEmpty();
+  //puts values from another tree into this one. Assumes
+  //that _nptr is empty.
   void makeCopy(const Treap& source);
 } ;
 
